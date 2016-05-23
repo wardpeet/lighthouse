@@ -48,16 +48,29 @@ class ManifestShortNameLength extends Audit {
   static audit(artifacts) {
     let isShortNameShortEnough = false;
     let debugString;
+    let manifestValue;
     const manifest = artifacts.manifest.value;
     const suggestedLength = 12;
 
-    if (manifest && manifest.short_name && manifest.short_name.value) {
+    if (manifest) {
+      const shortNameValue = _getManifestShortName(manifest);
+      const nameValue = _getManifestName(manifest);
+      manifestValue = shortNameValue;
+
+      // When no shortname can be found we look for a name
+      // https://developer.chrome.com/apps/manifest/name#short_name
+      if (!manifestValue) {
+        manifestValue = nameValue;
+      }
+    }
+
+    if (manifestValue) {
       // Historically, Chrome recommended 12 chars as the maximum length to prevent truncation.
       // See #69 for more discussion.
-      isShortNameShortEnough = (manifest.short_name.value.length <= suggestedLength);
+      isShortNameShortEnough = (manifestValue.length <= suggestedLength);
       if (!isShortNameShortEnough) {
         debugString = `${suggestedLength} chars is the suggested maximum homescreen label length`;
-        debugString += ` (Found: ${manifest.short_name.value.length} chars).`;
+        debugString += ` (Found: ${manifestValue.length} chars).`;
       }
     }
 
@@ -66,6 +79,30 @@ class ManifestShortNameLength extends Audit {
       debugString
     });
   }
+}
+
+/**
+ * @param {!Manifest} manifest
+ * @return {string|null}
+ */
+function _getManifestShortName(manifest) {
+  if (manifest.short_name && manifest.short_name.value) {
+    return manifest.short_name.value;
+  }
+
+  return null;
+}
+
+/**
+ * @param {!Manifest} manifest
+ * @return {string|null}
+ */
+function _getManifestName(manifest) {
+  if (manifest.name && manifest.name.value) {
+    return manifest.name.value;
+  }
+
+  return null;
 }
 
 module.exports = ManifestShortNameLength;

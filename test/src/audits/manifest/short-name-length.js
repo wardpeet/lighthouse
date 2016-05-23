@@ -35,6 +35,17 @@ describe('Manifest: short_name_length audit', () => {
     return assert.equal(Audit.audit({manifest}).value, false);
   });
 
+  it('fails when a manifest contains no short_name and a long name', () => {
+    const manifestSrc = JSON.stringify({
+      name: 'i\'m much longer than the recommended size',
+      short_name: undefined
+    });
+    const manifest = manifestParser(manifestSrc);
+    const out = Audit.audit({manifest});
+    assert.equal(out.value, false);
+    assert.notEqual(out.debugString, undefined);
+  });
+
   it('fails when a manifest contains a long short_name', () => {
     const manifestSrc = JSON.stringify({
       short_name: 'i\'m much longer than the recommended size'

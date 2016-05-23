@@ -49,14 +49,40 @@ class ManifestShortName extends Audit {
     let hasShortName = false;
     const manifest = artifacts.manifest.value;
 
-    if (manifest && manifest.short_name) {
-      hasShortName = (!!manifest.short_name.value);
+    if (manifest) {
+      const manifestShortName = _getManifestShortName(manifest);
+      const manifestName = _getManifestName(manifest);
+      hasShortName = !!(manifestShortName || manifestName);
     }
 
     return ManifestShortName.generateAuditResult({
       value: hasShortName
     });
   }
+}
+
+/**
+ * @param {!Manifest} manifest
+ * @return {string|null}
+ */
+function _getManifestShortName(manifest) {
+  if (manifest.short_name && manifest.short_name.value) {
+    return manifest.short_name.value;
+  }
+
+  return null;
+}
+
+/**
+ * @param {!Manifest} manifest
+ * @return {string|null}
+ */
+function _getManifestName(manifest) {
+  if (manifest.name && manifest.name.value) {
+    return manifest.name.value;
+  }
+
+  return null;
 }
 
 module.exports = ManifestShortName;
