@@ -18,6 +18,7 @@
 'use strict';
 
 const Audit = require('../audit');
+const _get = require('lodash.get');
 
 class ManifestShortName extends Audit {
   /**
@@ -50,8 +51,8 @@ class ManifestShortName extends Audit {
     const manifest = artifacts.manifest.value;
 
     if (manifest) {
-      const manifestShortName = _getManifestShortName(manifest);
-      const manifestName = _getManifestName(manifest);
+      const manifestShortName = _get(manifest, 'short_name.value');
+      const manifestName = _get(manifest, 'name.value');
       hasShortName = !!(manifestShortName || manifestName);
     }
 
@@ -59,30 +60,6 @@ class ManifestShortName extends Audit {
       value: hasShortName
     });
   }
-}
-
-/**
- * @param {!Manifest} manifest
- * @return {string|null}
- */
-function _getManifestShortName(manifest) {
-  if (manifest.short_name && manifest.short_name.value) {
-    return manifest.short_name.value;
-  }
-
-  return null;
-}
-
-/**
- * @param {!Manifest} manifest
- * @return {string|null}
- */
-function _getManifestName(manifest) {
-  if (manifest.name && manifest.name.value) {
-    return manifest.name.value;
-  }
-
-  return null;
 }
 
 module.exports = ManifestShortName;

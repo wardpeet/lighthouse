@@ -38,6 +38,7 @@
     "gl-matrix": "2.3.2",
     "handlebars": "^4.0.5",
     "jszip": "2.6.0",
+    "lodash.get": "^4.3.0",
     "meow": "^3.7.0",
     "npmlog": "^2.0.3",
     "semver": "^5.1.0",
