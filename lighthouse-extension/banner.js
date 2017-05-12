@@ -28,8 +28,7 @@ const REVISION = require('child_process')
 const BANNER = `// lighthouse, browserified. ${VERSION} (${REVISION})\n`;
 
 module.exports = function() {
-  return through.obj(function TransformStream(file, enc, cb) {
-
+  return through.obj((file, enc, cb) => {
     if (file.isStream()) {
       const stream = through();
       stream.write(new Buffer(BANNER));
@@ -39,6 +38,7 @@ module.exports = function() {
       file.contents = Buffer.concat([new Buffer(BANNER), file.contents]);
     }
 
+    // eslint-disable-next-line no-invalid-this
     this.push(file);
 
     cb();
