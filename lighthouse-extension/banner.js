@@ -28,7 +28,7 @@ const REVISION = require('child_process')
 const BANNER = `// lighthouse, browserified. ${VERSION} (${REVISION})\n`;
 
 module.exports = function() {
-  return through.obj((file, enc, cb) => {
+  return through.obj(function(file, enc, cb) => {
     if (file.isStream()) {
       const stream = through();
       stream.write(new Buffer(BANNER));
