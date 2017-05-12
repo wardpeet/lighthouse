@@ -15,6 +15,7 @@ const livereload = require('gulp-livereload');
 const babel = require('babel-core');
 const tap = require('gulp-tap');
 const zip = require('gulp-zip');
+const banner = require('./banner');
 const LighthouseRunner = require('../lighthouse-core/runner');
 
 const distDir = 'dist';
@@ -170,6 +171,7 @@ gulp.task('compilejs', () => {
       file.contents = new Buffer(minified);
       return file;
     }))
+    .pipe(banner())
     .pipe(gulp.dest('dist/scripts'));
 });
 
