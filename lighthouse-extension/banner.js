@@ -18,25 +18,17 @@
 'use strict';
 
 const through = require('through2');
-const pkg = require('../package.json');
 
-const VERSION = pkg.version;
-const REVISION = require('child_process')
-  .execSync('git rev-parse HEAD')
-  .toString().trim();
-
-const BANNER = `// lighthouse, browserified. ${VERSION} (${REVISION})\n`;
-
-module.exports = function() {
+module.exports = function(banner) {
   return through.obj(function(file, enc, cb) {
     if (file.isStream()) {
       const stream = through();
-      stream.write(new Buffer(BANNER));
+      stream.write(new Buffer(banner));
       // eslint-disable-next-line no-invalid-this
       stream.on('error', this.emit.bind(this, 'error'));
       file.contents = file.contents.pipe(stream);
     } else {
-      file.contents = Buffer.concat([new Buffer(BANNER), file.contents]);
+      file.contents = Buffer.concat([new Buffer(banner), file.contents]);
     }
 
     // eslint-disable-next-line no-invalid-this

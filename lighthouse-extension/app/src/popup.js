@@ -40,6 +40,10 @@ function getLighthouseVersion() {
   return chrome.runtime.getManifest().version;
 }
 
+function getLighthouseRevision() {
+  return '__REVISION__';
+}
+
 function getChromeVersion() {
   return /Chrome\/([0-9.]+)/.exec(navigator.userAgent)[1];
 }
@@ -55,6 +59,7 @@ function hideRunningSubpage() {
 function buildReportErrorLink(err) {
   const issueBody = `
 **Lighthouse Version**: ${getLighthouseVersion()}
+**Lighthouse Revision**: ${getLighthouseRevision()}
 **Chrome Version**: ${getChromeVersion()}
 **Initial URL**: ${siteURL}
 **Error Message**: ${err.message}

@@ -17,8 +17,16 @@ const tap = require('gulp-tap');
 const zip = require('gulp-zip');
 const banner = require('./banner');
 const LighthouseRunner = require('../lighthouse-core/runner');
+const pkg = require('../package.json');
 
 const distDir = 'dist';
+
+const VERSION = pkg.version;
+const REVISION = require('child_process')
+  .execSync('git rev-parse HEAD')
+  .toString().trim();
+
+const BANNER = `// lighthouse, browserified. ${VERSION} (${REVISION})\n`;
 
 const audits = LighthouseRunner.getAuditList()
     .map(f => '../lighthouse-core/audits/' + f.replace(/\.js$/, ''));
@@ -102,7 +110,12 @@ gulp.task('browserify-lighthouse', () => {
     'app/src/lighthouse-background.js'
   ], {read: false})
     .pipe(tap(file => {
-      let bundle = browserify(file.path); // , {debug: true}); // for sourcemaps
+      let bundle = browserify(file.path, {
+        insertGlobalVars: {
+          'REVISION': REVISION,
+        },
+        // debug: true
+      });
       bundle = applyBrowserifyTransforms(bundle);
 
       // lighthouse-background will need some additional transforms, ignores and requires…
@@ -145,6 +158,13 @@ gulp.task('browserify-other', () => {
     .pipe(tap(file => {
       let bundle = browserify(file.path); // , {debug: true}); // for sourcemaps
       bundle = applyBrowserifyTransforms(bundle);
+
+      // replace revision
+      bundle.transform('browserify-versionify', {
+        placeholder: '__REVISION__',
+        version: REVISION,
+      });
+
       // Inject the new browserified contents back into our gulp pipeline
       file.contents = bundle.bundle();
     }))
@@ -171,7 +191,7 @@ gulp.task('compilejs', () => {
       file.contents = new Buffer(minified);
       return file;
     }))
-    .pipe(banner())
+    .pipe(banner(BANNER))
     .pipe(gulp.dest('dist/scripts'));
 });
 
