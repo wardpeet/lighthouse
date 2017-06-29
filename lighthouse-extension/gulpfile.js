@@ -111,12 +111,7 @@ gulp.task('browserify-lighthouse', () => {
     'app/src/lighthouse-background.js'
   ], {read: false})
     .pipe(tap(file => {
-      let bundle = browserify(file.path, {
-        insertGlobalVars: {
-          'COMMITHASH': COMMITHASH,
-        },
-        // debug: true
-      });
+      let bundle = browserify(file.path); // , {debug: true})
       bundle = applyBrowserifyTransforms(bundle);
 
       // lighthouse-background will need some additional transforms, ignores and requires…
