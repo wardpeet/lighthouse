@@ -40,8 +40,8 @@ function getLighthouseVersion() {
   return chrome.runtime.getManifest().version;
 }
 
-function getLighthouseRevision() {
-  return '__REVISION__';
+function getLighthouseCommitHash() {
+  return '__COMMITHASH__';
 }
 
 function getChromeVersion() {
@@ -59,7 +59,7 @@ function hideRunningSubpage() {
 function buildReportErrorLink(err) {
   const issueBody = `
 **Lighthouse Version**: ${getLighthouseVersion()}
-**Lighthouse Revision**: ${getLighthouseRevision()}
+**Lighthouse Commit**: ${getLighthouseCommitHash()}
 **Chrome Version**: ${getChromeVersion()}
 **Initial URL**: ${siteURL}
 **Error Message**: ${err.message}
