@@ -23,11 +23,11 @@ const pkg = require('../package.json');
 const distDir = 'dist';
 
 const VERSION = pkg.version;
-const COMMITHASH = require('child_process')
+const COMMIT_HASH = require('child_process')
   .execSync('git rev-parse HEAD')
   .toString().trim();
 
-const BANNER = `// lighthouse, browserified. ${VERSION} (${COMMITHASH})\n`;
+const BANNER = `// lighthouse, browserified. ${VERSION} (${COMMIT_HASH})\n`;
 
 const audits = LighthouseRunner.getAuditList()
     .map(f => '../lighthouse-core/audits/' + f.replace(/\.js$/, ''));
@@ -158,7 +158,7 @@ gulp.task('browserify-other', () => {
       // Inject the new browserified contents back into our gulp pipeline
       file.contents = bundle.bundle();
     }))
-    .pipe(gulpReplace('__COMMITHASH__', COMMITHASH))
+    .pipe(gulpReplace('__COMMITHASH__', COMMIT_HASH))
     .pipe(gulp.dest('app/scripts'))
     .pipe(gulp.dest(`${distDir}/scripts`));
 });
