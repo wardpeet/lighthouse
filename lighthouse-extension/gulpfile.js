@@ -111,7 +111,7 @@ gulp.task('browserify-lighthouse', () => {
     'app/src/lighthouse-background.js'
   ], {read: false})
     .pipe(tap(file => {
-      let bundle = browserify(file.path); // , {debug: true})
+      let bundle = browserify(file.path); // , {debug: true}); // for sourcemaps
       bundle = applyBrowserifyTransforms(bundle);
 
       // lighthouse-background will need some additional transforms, ignores and requires…
