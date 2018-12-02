@@ -560,14 +560,12 @@ describe('GatherRunner', function() {
     const settings = {};
 
     const passes = [{
-      blankDuration: 0,
       recordTrace: true,
       passName: 'firstPass',
       gatherers: [
         {instance: t1},
       ],
     }, {
-      blankDuration: 0,
       passName: 'secondPass',
       gatherers: [
         {instance: t2},
@@ -587,12 +585,10 @@ describe('GatherRunner', function() {
 
   it('respects trace names', () => {
     const passes = [{
-      blankDuration: 0,
       recordTrace: true,
       passName: 'firstPass',
       gatherers: [{instance: new TestGatherer()}],
     }, {
-      blankDuration: 0,
       recordTrace: true,
       passName: 'secondPass',
       gatherers: [{instance: new TestGatherer()}],
@@ -610,12 +606,10 @@ describe('GatherRunner', function() {
 
   it('doesn\'t leave networkRecords as an artifact', () => {
     const passes = [{
-      blankDuration: 0,
       recordTrace: true,
       passName: 'firstPass',
       gatherers: [{instance: new TestGatherer()}],
     }, {
-      blankDuration: 0,
       recordTrace: true,
       passName: 'secondPass',
       gatherers: [{instance: new TestGatherer()}],
@@ -684,6 +678,18 @@ describe('GatherRunner', function() {
       assert.equal(error.message, 'ERRORED_DOCUMENT_REQUEST');
       assert.equal(error.code, 'ERRORED_DOCUMENT_REQUEST');
       assert.ok(/^Lighthouse was unable to reliably load/.test(error.friendlyMessage));
+    });
+
+    it('fails when page domain doesn\'t resolve', () => {
+      const url = 'http://the-page.com';
+      const mainRecord = new NetworkRequest();
+      mainRecord.url = url;
+      mainRecord.failed = true;
+      mainRecord.localizedFailDescription = 'net::ERR_NAME_NOT_RESOLVED';
+      const error = GatherRunner.getPageLoadError(url, [mainRecord]);
+      assert.equal(error.message, 'DNS_FAILURE');
+      assert.equal(error.code, 'DNS_FAILURE');
+      assert.ok(/^DNS servers could not resolve/.test(error.friendlyMessage));
     });
   });
 
@@ -790,7 +796,7 @@ describe('GatherRunner', function() {
         },
       ];
       const passes = [{
-        blankDuration: 0,
+
         gatherers: gatherers.map(G => ({instance: new G()})),
       }];
 
@@ -844,7 +850,7 @@ describe('GatherRunner', function() {
       ].map(instance => ({instance}));
       const gathererNames = gatherers.map(gatherer => gatherer.instance.name);
       const passes = [{
-        blankDuration: 0,
+
         gatherers,
       }];
 
@@ -881,7 +887,7 @@ describe('GatherRunner', function() {
         {instance: new class EavesdropGatherer3 extends EavesdropGatherer {}()},
       ];
 
-      const passes = [{blankDuration: 0, gatherers}];
+      const passes = [{gatherers}];
       return GatherRunner.run(passes, {
         driver: fakeDriver,
         requestedUrl: 'https://example.com',
@@ -1002,7 +1008,7 @@ describe('GatherRunner', function() {
       ].map(instance => ({instance}));
       const gathererNames = gatherers.map(gatherer => gatherer.instance.name);
       const passes = [{
-        blankDuration: 0,
+
         gatherers,
       }];
 
@@ -1022,7 +1028,7 @@ describe('GatherRunner', function() {
 
     it('rejects if a gatherer does not provide an artifact', () => {
       const passes = [{
-        blankDuration: 0,
+
         recordTrace: true,
         passName: 'firstPass',
         gatherers: [
@@ -1040,7 +1046,7 @@ describe('GatherRunner', function() {
 
     it('rejects when domain name can\'t be resolved', () => {
       const passes = [{
-        blankDuration: 0,
+
         recordTrace: true,
         passName: 'firstPass',
         gatherers: [],
@@ -1065,13 +1071,13 @@ describe('GatherRunner', function() {
         config: new Config({}),
       }).then(artifacts => {
         assert.equal(artifacts.LighthouseRunWarnings.length, 1);
-        assert.ok(/unable.*load the page/.test(artifacts.LighthouseRunWarnings[0]));
+        assert.ok(/DNS servers could not resolve/.test(artifacts.LighthouseRunWarnings[0]));
       });
     });
 
     it('resolves when domain name can\'t be resolved but is offline', () => {
       const passes = [{
-        blankDuration: 0,
+
         recordTrace: true,
         passName: 'firstPass',
         gatherers: [],

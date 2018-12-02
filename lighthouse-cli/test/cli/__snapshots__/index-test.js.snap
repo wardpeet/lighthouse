@@ -64,7 +64,7 @@ Object {
       "path": "redirects",
     },
     Object {
-      "path": "webapp-install-banner",
+      "path": "installable-manifest",
     },
     Object {
       "path": "splash-screen",
@@ -101,6 +101,9 @@ Object {
     },
     Object {
       "path": "metrics",
+    },
+    Object {
+      "path": "offline-start-url",
     },
     Object {
       "path": "manual/pwa-cross-browser",
@@ -821,6 +824,11 @@ Object {
           "weight": 5,
         },
         Object {
+          "group": "pwa-fast-reliable",
+          "id": "offline-start-url",
+          "weight": 1,
+        },
+        Object {
           "group": "pwa-installable",
           "id": "is-on-https",
           "weight": 2,
@@ -832,36 +840,36 @@ Object {
         },
         Object {
           "group": "pwa-installable",
-          "id": "webapp-install-banner",
-          "weight": 3,
+          "id": "installable-manifest",
+          "weight": 2,
         },
         Object {
-          "group": "pwa-engaging",
+          "group": "pwa-optimized",
           "id": "redirects-http",
           "weight": 2,
         },
         Object {
-          "group": "pwa-engaging",
+          "group": "pwa-optimized",
           "id": "splash-screen",
           "weight": 1,
         },
         Object {
-          "group": "pwa-engaging",
+          "group": "pwa-optimized",
           "id": "themed-omnibox",
           "weight": 1,
         },
         Object {
-          "group": "pwa-engaging",
+          "group": "pwa-optimized",
           "id": "content-width",
           "weight": 1,
         },
         Object {
-          "group": "pwa-engaging",
+          "group": "pwa-optimized",
           "id": "viewport",
           "weight": 2,
         },
         Object {
-          "group": "pwa-engaging",
+          "group": "pwa-optimized",
           "id": "without-javascript",
           "weight": 1,
         },
@@ -997,14 +1005,14 @@ Object {
     "metrics": Object {
       "title": "Metrics",
     },
-    "pwa-engaging": Object {
-      "title": "Engaging",
-    },
     "pwa-fast-reliable": Object {
       "title": "Fast and reliable",
     },
     "pwa-installable": Object {
       "title": "Installable",
+    },
+    "pwa-optimized": Object {
+      "title": "PWA Optimized",
     },
     "seo-content": Object {
       "description": "Format your HTML in a way that enables crawlers to better understand your app’s content.",
@@ -1021,7 +1029,6 @@ Object {
   },
   "passes": Array [
     Object {
-      "blankDuration": 300,
       "blankPage": "about:blank",
       "blockedUrlPatterns": Array [],
       "cpuQuietThresholdMs": 1000,
@@ -1115,7 +1122,6 @@ Object {
       "useThrottling": true,
     },
     Object {
-      "blankDuration": 300,
       "blankPage": "about:blank",
       "blockedUrlPatterns": Array [],
       "cpuQuietThresholdMs": 0,
@@ -1137,7 +1143,6 @@ Object {
       "useThrottling": false,
     },
     Object {
-      "blankDuration": 300,
       "blankPage": "about:blank",
       "blockedUrlPatterns": Array [
         "*.css",
@@ -1258,14 +1263,14 @@ Object {
     "metrics": Object {
       "title": "Metrics",
     },
-    "pwa-engaging": Object {
-      "title": "Engaging",
-    },
     "pwa-fast-reliable": Object {
       "title": "Fast and reliable",
     },
     "pwa-installable": Object {
       "title": "Installable",
+    },
+    "pwa-optimized": Object {
+      "title": "PWA Optimized",
     },
     "seo-content": Object {
       "description": "Format your HTML in a way that enables crawlers to better understand your app’s content.",
@@ -1282,7 +1287,6 @@ Object {
   },
   "passes": Array [
     Object {
-      "blankDuration": 300,
       "blankPage": "about:blank",
       "blockedUrlPatterns": Array [],
       "cpuQuietThresholdMs": 1000,

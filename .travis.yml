@@ -1,12 +1,22 @@
 sudo: required
-language: node_js
 branches:
   only:
-  - master
+    - master
 matrix:
   include:
-    - node_js: "8"
-    - node_js: "10"
+    - language: node_js
+      node_js: "8"
+      os: windows
+    - language: node_js
+      node_js: "8"
+      os: linux
+    - language: node_js
+      node_js: "10"
+      os: windows
+      if: head_branch IS blank AND branch = master
+    - language: node_js
+      node_js: "10"
+      os: linux
       if: head_branch IS blank AND branch = master
 dist: trusty
 cache:
@@ -14,29 +24,32 @@ cache:
   directories:
     - node_modules
     - lantern-data
-    - lighthouse-viewer/node_modules
     - /home/travis/.rvm/gems/
 install:
   # if our e2e tests fail in the future it might be that we are not compatible
   # with the latest puppeteer api so we probably need to run on chromimum
   # @see https://github.com/GoogleChrome/lighthouse/pull/4640/files#r171425004
   - export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
+  # Stable (chrome 70) is currently bugged on windows server core 2016
+  # @see https://bugs.chromium.org/p/chromium/issues/detail?id=873097
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install chromium --pre -y; fi
   - yarn
-  # travis can't handle the parallel install (without caches)
-  - yarn run install-all:task:windows
 before_script:
-  - export DISPLAY=:99.0
+  # disables lf to crlf conversion (we might want to move to gitattributes)
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then git config --global core.autocrlf false; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export DISPLAY=:99.0; fi
   # see comment above about puppeteer
-  - export CHROME_PATH="$(which google-chrome-stable)"
-  - sh -e /etc/init.d/xvfb start
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then export CHROME_PATH="C:/Program Files (x86)/Chromium/Application/chrome.exe"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CHROME_PATH="$(which google-chrome-stable)"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh -e /etc/init.d/xvfb start; fi
   - yarn build-all
 script:
-  - yarn bundlesize
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then yarn bundlesize; fi
   - yarn diff:sample-json
   - yarn lint
   - yarn unit:silentcoverage
   - yarn type-check
-  - yarn smoke:silentcoverage
+  - yarn smoke
   - yarn test-clients
   - yarn test-viewer
   - yarn test-lantern
@@ -50,7 +63,7 @@ before_cache:
   - rm -rf ./node_modules/temp-devtoolsfrontend/
   - rm -rf ./node_modules/temp-devtoolsprotocol/
 after_success:
-  - yarn coveralls
-  - yarn codecov
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then yarn coveralls; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then  yarn codecov; fi
 addons:
   chrome: stable
