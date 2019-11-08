@@ -9,6 +9,12 @@ jobs:
   variables:
     YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
   steps:
+    - powershell: |
+        Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+        scoop bucket add extras
+        scoop install googlechrome-canary
+        Write-Host "##vso[task.setvariable variable=CHROME_PATH;]$env:USERPROFILE\scoop\apps\googlechrome-canary\current\chrome.exe"
+      displayName: "Install chrome canary"
     - task: NodeTool@0
       inputs:
         versionSpec: "10.x"
