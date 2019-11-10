@@ -37,4 +37,4 @@ jobs:
     - script: yarn unit-viewer
     # FIXME: Exclude Appveyor from running `perf` smoketest until we fix the flake.
     #     https://github.com/GoogleChrome/lighthouse/issues/5053
-    - script: yarn smoke -j=2 --retries=2 a11y errors oopif pwa pwa2 pwa3 dbw redirects seo offline byte lantern metrics
+    - script: yarn smoke -j=1 --retries=2 a11y errors oopif pwa pwa2 pwa3 dbw redirects seo offline byte perf lantern metrics
